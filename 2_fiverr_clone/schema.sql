@@ -33,5 +33,3 @@ CREATE TABLE offers (
 );
 
 ALTER TABLE offers ADD CONSTRAINT unique_client_offer UNIQUE (user_id, proposal_id);
-
-test  
