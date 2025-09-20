@@ -84,38 +84,53 @@ if (isset($_POST['updateUserBtn'])) {
 }
 
 if (isset($_POST['insertNewProposalBtn'])) {
-	$user_id = $_SESSION['user_id'];
-	$description = htmlspecialchars($_POST['description']);
-	$min_price = htmlspecialchars($_POST['min_price']);
-	$max_price = htmlspecialchars($_POST['max_price']);
+    $user_id = $_SESSION['user_id'];
+    $description = htmlspecialchars($_POST['description']);
+    $min_price = htmlspecialchars($_POST['min_price']);
+    $max_price = htmlspecialchars($_POST['max_price']);
+    $category_id = !empty($_POST['category_id']) ? intval($_POST['category_id']) : null;
+    $subcategory_id = !empty($_POST['subcategory_id']) ? intval($_POST['subcategory_id']) : null;
 
-	// Get file name
-	$fileName = $_FILES['image']['name'];
+    // Get file name
+    $fileName = $_FILES['image']['name'];
 
-	// Get temporary file name
-	$tempFileName = $_FILES['image']['tmp_name'];
+    // Get temporary file name
+    $tempFileName = $_FILES['image']['tmp_name'];
 
-	// Get file extension
-	$fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+    // Get file extension
+    $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
 
-	// Generate random characters for image name
-	$uniqueID = sha1(md5(rand(1,9999999)));
+    // Generate random characters for image name
+    $uniqueID = sha1(md5(rand(1,9999999)));
 
-	// Combine image name and file extension
-	$imageName = $uniqueID.".".$fileExtension;
+    // Combine image name and file extension
+    $imageName = $uniqueID.".".$fileExtension;
 
-	// Specify path
-	$folder = "../../images/".$imageName;
+    // Specify path
+    $folder = "../../images/".$imageName;
 
-	// Move file to the specified path 
-	if (move_uploaded_file($tempFileName, $folder)) {
-		if ($proposalObj->createProposal($user_id, $description, $imageName, $min_price, $max_price)) {
-			$_SESSION['status'] = "200";
-			$_SESSION['message'] = "Proposal saved successfully!";
-			header("Location: ../index.php");
-		}
-	}
+    // Move file to the specified path 
+    if (move_uploaded_file($tempFileName, $folder)) {
+        if ($proposalObj->createProposal($user_id, $description, $imageName, $min_price, $max_price, $category_id, $subcategory_id)) {
+            $_SESSION['status'] = "200";
+            $_SESSION['message'] = "Proposal saved successfully!";
+            header("Location: ../index.php");
+            exit;
+        } else {
+            $_SESSION['status'] = "500";
+            $_SESSION['message'] = "Database error. Could not save proposal.";
+            header("Location: ../index.php");
+            exit;
+        }
+    } else {
+        $_SESSION['status'] = "500";
+        $_SESSION['message'] = "Image upload failed.";
+        header("Location: ../index.php");
+        exit;
+    }
 }
+
+
 
 if (isset($_POST['updateProposalBtn'])) {
 	$min_price = $_POST['min_price'];

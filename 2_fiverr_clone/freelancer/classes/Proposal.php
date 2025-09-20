@@ -11,28 +11,35 @@ class Proposal extends Database {
      * @param int $author_id The ID of the author.
      * @return int The ID of the newly created Proposal.
      */
-    public function createProposal($user_id, $description, $image, $min_price, $max_price) {
-        $sql = "INSERT INTO Proposals (user_id, description, image, min_price, max_price) VALUES (?, ?, ?, ?, ?)";
-        return $this->executeNonQuery($sql, [$user_id, $description, $image, $min_price, $max_price]);
+    public function createProposal($user_id, $description, $image, $min_price, $max_price, $category_id, $subcategory_id = null) {
+        $sql = "INSERT INTO Proposals (user_id, description, image, min_price, max_price, category_id, subcategory_id) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return $this->executeNonQuery($sql, [$user_id, $description, $image, $min_price, $max_price, $category_id, $subcategory_id]);
     }
 
-    /**
-     * Retrieves Proposals from the database.
-     * @param int|null $id The Proposal ID to retrieve, or null for all Proposals.
-     * @return array
-     */
     public function getProposals($id = null) {
         if ($id) {
-            $sql = "SELECT * FROM Proposals JOIN fiverr_clone_users on Proposals.user_id = fiverr_clone_users.user_id WHERE Proposal_id = ?";
+            $sql = "SELECT p.*, u.*, c.category_name, s.subcategory_name,
+                           p.date_added AS proposals_date_added
+                    FROM Proposals p
+                    JOIN fiverr_clone_users u ON p.user_id = u.user_id
+                    LEFT JOIN categories c ON p.category_id = c.category_id
+                    LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
+                    WHERE p.Proposal_id = ?";
             return $this->executeQuerySingle($sql, [$id]);
         }
-        $sql = "SELECT Proposals.*, fiverr_clone_users.*, 
-                Proposals.date_added AS proposals_date_added
-                FROM Proposals JOIN fiverr_clone_users ON 
-                Proposals.user_id = fiverr_clone_users.user_id
-                ORDER BY Proposals.date_added DESC";
+
+        $sql = "SELECT p.*, u.*, c.category_name, s.subcategory_name,
+                       p.date_added AS proposals_date_added
+                FROM Proposals p
+                JOIN fiverr_clone_users u ON p.user_id = u.user_id
+                LEFT JOIN categories c ON p.category_id = c.category_id
+                LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
+                ORDER BY p.date_added DESC";
         return $this->executeQuery($sql);
     }
+
+
 
 
     public function getProposalsByUserID($user_id) {

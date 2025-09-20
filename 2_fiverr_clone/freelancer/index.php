@@ -7,6 +7,10 @@ if (!$userObj->isLoggedIn()) {
 if ($userObj->isAdmin()) {
   header("Location: ../client/index.php");
 } 
+
+$categoryObj = new Category();
+$categories = $categoryObj->getAllCategoriesWithSubcategories();
+
 ?>
 <!doctype html>
   <html lang="en">
@@ -62,6 +66,43 @@ if ($userObj->isAdmin()) {
                     <label for="exampleInputEmail1">Max Price</label>
                     <input type="number" class="form-control" name="max_price" required>
                   </div>
+
+                  <div class="form-group">
+                  <label for="category_id">Category</label>
+                  <select name="category_id" id="category_id" class="form-control" required>
+                    <option value="">-- Select Category --</option>
+                    <?php foreach ($categories as $cat): ?>
+                      <option value="<?php echo $cat['category_id']; ?>">
+                        <?php echo htmlspecialchars($cat['category_name']); ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="subcategory_id">Subcategory (optional)</label>
+                  <select name="subcategory_id" id="subcategory_id" class="form-control">
+                    <option value="">-- Select Subcategory --</option>
+                  </select>
+                </div>
+
+                <script>
+                  const subcategories = <?php echo json_encode($categories); ?>;
+                  $('#category_id').on('change', function() {
+                      const catId = $(this).val();
+                      let subs = '<option value="">-- Select Subcategory --</option>';
+                      if (catId && subcategories) {
+                          const selectedCat = subcategories.find(c => c.category_id == catId);
+                          if (selectedCat && selectedCat.subcategories) {
+                              selectedCat.subcategories.forEach(sub => {
+                                  subs += `<option value="${sub.subcategory_id}">${sub.subcategory_name}</option>`;
+                              });
+                          }
+                      }
+                      $('#subcategory_id').html(subs);
+                  });
+                </script>
+
                   <div class="form-group">
                     <label for="exampleInputEmail1">Image</label>
                     <input type="file" class="form-control" name="image" required>
@@ -80,6 +121,8 @@ if ($userObj->isAdmin()) {
               <h2><a href="other_profile_view.php?user_id=<?php echo $proposal['user_id']; ?>"><?php echo $proposal['username']; ?></a></h2>
               <img src="<?php echo '../images/' . $proposal['image']; ?>" alt="">
               <p class="mt-4"><i><?php echo $proposal['proposals_date_added']; ?></i></p>
+              <p><strong>Category:</strong> <?php echo $proposal['category_name'] ?? 'N/A'; ?></p>
+              <p><strong>Subcategory:</strong> <?php echo $proposal['subcategory_name'] ?? 'N/A'; ?></p>
               <p class="mt-2"><?php echo $proposal['description']; ?></p>
               <h4><i><?php echo number_format($proposal['min_price']) . " - " . number_format($proposal['max_price']); ?> PHP</i></h4>
               <div class="float-right">

@@ -23,14 +23,23 @@ class Proposal extends Database {
      */
     public function getProposals($id = null) {
         if ($id) {
-            $sql = "SELECT * FROM Proposals JOIN fiverr_clone_users on Proposals.user_id = fiverr_clone_users.user_id WHERE Proposal_id = ?";
+            $sql = "SELECT p.*, u.*, c.category_name, s.subcategory_name,
+                           p.date_added AS proposals_date_added
+                    FROM Proposals p
+                    JOIN fiverr_clone_users u ON p.user_id = u.user_id
+                    LEFT JOIN categories c ON p.category_id = c.category_id
+                    LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
+                    WHERE p.Proposal_id = ?";
             return $this->executeQuerySingle($sql, [$id]);
         }
-        $sql = "SELECT Proposals.*, fiverr_clone_users.*, 
-                Proposals.date_added AS proposals_date_added
-                FROM Proposals JOIN fiverr_clone_users ON 
-                Proposals.user_id = fiverr_clone_users.user_id
-                ORDER BY Proposals.date_added DESC";
+
+        $sql = "SELECT p.*, u.*, c.category_name, s.subcategory_name,
+                       p.date_added AS proposals_date_added
+                FROM Proposals p
+                JOIN fiverr_clone_users u ON p.user_id = u.user_id
+                LEFT JOIN categories c ON p.category_id = c.category_id
+                LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
+                ORDER BY p.date_added DESC";
         return $this->executeQuery($sql);
     }
 
@@ -80,5 +89,32 @@ class Proposal extends Database {
         $sql = "DELETE FROM Proposals WHERE Proposal_id = ?";
         return $this->executeNonQuery($sql, [$id]);
     }
+
+    public function getProposalsByCategory($category_id) {
+        $sql = "SELECT Proposals.*, fiverr_clone_users.*, 
+                    Categories.category_name, Subcategories.subcategory_name,
+                    Proposals.date_added AS proposals_date_added
+                FROM Proposals
+                JOIN fiverr_clone_users ON Proposals.user_id = fiverr_clone_users.user_id
+                JOIN Categories ON Proposals.category_id = Categories.category_id
+                LEFT JOIN Subcategories ON Proposals.subcategory_id = Subcategories.subcategory_id
+                WHERE Proposals.category_id = ?
+                ORDER BY Proposals.date_added DESC";
+        return $this->executeQuery($sql, [$category_id]);
+    }
+
+    public function getProposalsBySubcategory($subcategory_id) {
+        $sql = "SELECT Proposals.*, fiverr_clone_users.*, 
+                    Categories.category_name, Subcategories.subcategory_name,
+                    Proposals.date_added AS proposals_date_added
+                FROM Proposals
+                JOIN fiverr_clone_users ON Proposals.user_id = fiverr_clone_users.user_id
+                JOIN Categories ON Proposals.category_id = Categories.category_id
+                JOIN Subcategories ON Proposals.subcategory_id = Subcategories.subcategory_id
+                WHERE Proposals.subcategory_id = ?
+                ORDER BY Proposals.date_added DESC";
+        return $this->executeQuery($sql, [$subcategory_id]);
+    }
+
 }
 ?>

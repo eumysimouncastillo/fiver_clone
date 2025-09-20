@@ -55,6 +55,8 @@ if (!$userObj->isAdmin()) {
                 <div class="col-md-6">
                   <h2><a href="other_profile_view.php?user_id=<?php echo $proposal['user_id'] ?>"><?php echo $proposal['username']; ?></a></h2>
                   <img src="<?php echo '../images/'.$proposal['image']; ?>" class="img-fluid" alt="">
+                  <p><strong>Category:</strong> <?php echo $proposal['category_name'] ?? 'N/A'; ?></p>
+                  <p><strong>Subcategory:</strong> <?php echo $proposal['subcategory_name'] ?? 'N/A'; ?></p>
                   <p class="mt-4 mb-4"><?php echo $proposal['description']; ?></p>
                   <h4><i><?php echo number_format($proposal['min_price']) . " - " . number_format($proposal['max_price']);?> PHP</i></h4>
                 </div>
@@ -93,21 +95,21 @@ if (!$userObj->isAdmin()) {
                     </div>
                     <div class="card-footer">
                       <?php if (isset($_GET['error']) && $_GET['error'] == "already_submitted"): ?>
-  <div class="alert alert-danger">Offer already submitted.</div>
-<?php endif; ?>
+                      <div class="alert alert-danger">Offer already submitted.</div>
+                    <?php endif; ?>
 
-<?php if (isset($_GET['success'])): ?>
-  <div class="alert alert-success">Offer submitted successfully!</div>
-<?php endif; ?>
+                    <?php if (isset($_GET['success'])): ?>
+                      <div class="alert alert-success">Offer submitted successfully!</div>
+                    <?php endif; ?>
 
-<form action="core/handleForms.php" method="POST">
-  <div class="form-group">
-    <label for="#">Description</label>
-    <input type="text" class="form-control" name="description" required>
-    <input type="hidden" class="form-control" name="proposal_id" value="<?php echo $proposal['proposal_id']; ?>">
-    <input type="submit" class="btn btn-primary float-right mt-4" name="insertOfferBtn" value="Submit Offer"> 
-  </div>
-</form>
+                    <form action="core/handleForms.php" method="POST">
+                      <div class="form-group">
+                        <label for="#">Description</label>
+                        <input type="text" class="form-control" name="description" required>
+                        <input type="hidden" class="form-control" name="proposal_id" value="<?php echo $proposal['proposal_id']; ?>">
+                        <input type="submit" class="btn btn-primary float-right mt-4" name="insertOfferBtn" value="Submit Offer"> 
+                      </div>
+                    </form>
                     </div>
                   </div>
                 </div>
