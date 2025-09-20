@@ -18,9 +18,6 @@ class Offer extends Database {
         }
     }
 
-
-
-
     public function getOffersByProposalID($proposal_id) {
         $sql = "SELECT 
                     offers.*, fiverr_clone_users.*, 

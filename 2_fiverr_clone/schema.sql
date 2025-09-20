@@ -38,3 +38,18 @@ ALTER TABLE offers ADD CONSTRAINT unique_client_offer UNIQUE (user_id, proposal_
 /* add admin role */
 ALTER TABLE fiverr_clone_users 
 ADD COLUMN is_admin BOOLEAN DEFAULT FALSE;
+
+/* categories and sub categories table */
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(255) NOT NULL,
+    date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE subcategories (
+    subcategory_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT,
+    subcategory_name VARCHAR(255) NOT NULL,
+    date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+);

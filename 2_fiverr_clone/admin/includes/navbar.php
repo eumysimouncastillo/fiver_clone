@@ -6,7 +6,7 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="project_offers_submitted.php">Project Offers Submitted </a>
+        <a class="nav-link" href="manage_categories.php">Manage Categories </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="core/handleForms.php?logoutUserBtn=1">Logout</a>

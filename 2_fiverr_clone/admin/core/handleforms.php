@@ -127,5 +127,50 @@ if (isset($_POST['deleteOfferBtn'])) {
 	}
 }
 
+// =================== ADD CATEGORY ===================
+if (isset($_POST['addCategoryBtn'])) {
+    $category_name = trim($_POST['category_name']);
 
+    if (!empty($category_name)) {
+        $result = $categoryObj->createCategory($category_name);
+
+        if ($result) {
+            $_SESSION['message'] = "Category added successfully!";
+            $_SESSION['status'] = "200";
+        } else {
+            $_SESSION['message'] = "Failed to add category.";
+            $_SESSION['status'] = "500";
+        }
+    } else {
+        $_SESSION['message'] = "Category name cannot be empty.";
+        $_SESSION['status'] = "400";
+    }
+
+    header("Location: ../manage_categories.php");
+    exit();
+}
+
+// =================== ADD SUBCATEGORY ===================
+if (isset($_POST['addSubcategoryBtn'])) {
+    $category_id = trim($_POST['category_id']);
+    $subcategory_name = trim($_POST['subcategory_name']);
+
+    if (!empty($category_id) && !empty($subcategory_name)) {
+        $result = $subcategoryObj->createSubcategory($category_id, $subcategory_name);
+
+        if ($result) {
+            $_SESSION['message'] = "Subcategory added successfully!";
+            $_SESSION['status'] = "200";
+        } else {
+            $_SESSION['message'] = "Failed to add subcategory.";
+            $_SESSION['status'] = "500";
+        }
+    } else {
+        $_SESSION['message'] = "Both category and subcategory name are required.";
+        $_SESSION['status'] = "400";
+    }
+
+    header("Location: ../manage_categories.php");
+    exit();
+}
 ?>
