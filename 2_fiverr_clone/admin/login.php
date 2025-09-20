@@ -24,7 +24,7 @@
         <div class="col-md-8 p-5">
           <div class="card shadow">
             <div class="card-header">
-              <h2>Welcome to the client's panel! Login Now!</h2>
+              <h2>Welcome to the admin's panel! Login Now!</h2>
             </div>
             <form action="core/handleForms.php" method="POST">
               <div class="card-body">

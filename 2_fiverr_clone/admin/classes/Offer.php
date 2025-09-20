@@ -18,19 +18,7 @@ class Offer extends Database {
         }
     }
 
-    public function getOffers($offer_id = null) {
-        if ($id) {
-            $sql = "SELECT * FROM offers WHERE offer_id = ?";
-            return $this->executeQuerySingle($sql, [$id]);
-        }
-        $sql = "SELECT 
-                    offers.*, fiverr_clone_users.*, 
-                    offers.date_added AS offer_date_added
-                FROM offers JOIN fiverr_clone_users ON 
-                offers.user_id = fiverr_clone_users.user_id 
-                ORDER BY offers.date_added DESC";
-        return $this->executeQuery($sql);
-    }
+
 
 
     public function getOffersByProposalID($proposal_id) {

@@ -45,28 +45,36 @@ if (isset($_POST['insertNewUserBtn'])) {
 }
 
 if (isset($_POST['loginUserBtn'])) {
-	$email = trim($_POST['email']);
-	$password = trim($_POST['password']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
 
-	if (!empty($email) && !empty($password)) {
+    if (!empty($email) && !empty($password)) {
 
-		if ($userObj->loginUser($email, $password)) {
-			header("Location: ../index.php");
-		}
-		else {
-			$_SESSION['message'] = "Username/password invalid";
-			$_SESSION['status'] = "400";
-			header("Location: ../login.php");
-		}
-	}
+        if ($userObj->loginUser($email, $password)) {
 
-	else {
-		$_SESSION['message'] = "Please make sure there are no empty input fields";
-		$_SESSION['status'] = '400';
-		header("Location: ../login.php");
-	}
+            // ✅ Check if admin
+            if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1) {
+                // Admin logged in
+                header("Location: ../index.php?role=admin");
+            } else {
+                // Regular client
+                header("Location: ../index.php");
+            }
 
+        } else {
+            $_SESSION['message'] = "Username/password invalid";
+            $_SESSION['status'] = "400";
+            header("Location: ../login.php");
+        }
+    }
+
+    else {
+        $_SESSION['message'] = "Please make sure there are no empty input fields";
+        $_SESSION['status'] = '400';
+        header("Location: ../login.php");
+    }
 }
+
 
 if (isset($_GET['logoutUserBtn'])) {
 	$userObj->logout();
