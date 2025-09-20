@@ -53,3 +53,10 @@ CREATE TABLE subcategories (
     date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
+
+/* add categories and subcategories on proposals table */
+ALTER TABLE proposals
+ADD COLUMN category_id INT AFTER user_id,
+ADD COLUMN subcategory_id INT NULL AFTER category_id,
+ADD CONSTRAINT fk_proposals_category FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE,
+ADD CONSTRAINT fk_proposals_subcategory FOREIGN KEY (subcategory_id) REFERENCES subcategories(subcategory_id) ON DELETE CASCADE;
