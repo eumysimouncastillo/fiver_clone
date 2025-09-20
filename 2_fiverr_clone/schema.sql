@@ -32,4 +32,9 @@ CREATE TABLE offers (
     FOREIGN KEY (proposal_id) REFERENCES proposals(proposal_id)
 );
 
+/* only one offer per client  */
 ALTER TABLE offers ADD CONSTRAINT unique_client_offer UNIQUE (user_id, proposal_id);
+
+/* add admin role */
+ALTER TABLE fiverr_clone_users 
+ADD COLUMN is_admin BOOLEAN DEFAULT FALSE;
